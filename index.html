@@ -25,8 +25,7 @@
     </div>
 
     <!-- Main App Container -->
-    <div id="app" class="app-container">
-        
+    <div id="app" class="app-container" style="opacity: 0;">
         <!-- Sidebar Navigation -->
         <nav class="sidebar">
             <div class="sidebar-header">
@@ -88,7 +87,6 @@
 
         <!-- Main Content Area -->
         <main class="main-content">
-            
             <!-- Dashboard Page -->
             <section id="dashboard" class="page active">
                 <div class="page-header">
@@ -110,1190 +108,113 @@
                 </div>
                 
                 <div class="dashboard-grid">
-                    <!-- Avatar Preview Card -->
                     <div class="card avatar-preview-card">
                         <div class="card-header">
                             <h3>AI Avatar Preview</h3>
-                            <div class="card-actions">
-                                <button id="btn-refresh-avatar" class="btn-icon-small" title="Refresh">
-                                    <span class="material-icons">refresh</span>
-                                </button>
-                            </div>
                         </div>
                         <div class="card-body">
                             <div class="avatar-canvas-container">
                                 <canvas id="avatar-canvas" width="400" height="400"></canvas>
                             </div>
                             <div class="avatar-controls">
-                                <button id="btn-blink" class="btn-icon" title="Blink">
-                                    <span class="material-icons">remove_red_eye</span>
-                                </button>
-                                <button id="btn-smile" class="btn-icon" title="Smile">
-                                    <span class="material-icons">sentiment_very_satisfied</span>
-                                </button>
-                                <button id="btn-talk" class="btn-icon" title="Talk">
-                                    <span class="material-icons">record_voice_over</span>
-                                </button>
-                                <button id="btn-sad" class="btn-icon" title="Sad">
-                                    <span class="material-icons">sentiment_very_dissatisfied</span>
-                                </button>
-                                <button id="btn-angry" class="btn-icon" title="Angry">
-                                    <span class="material-icons">sentiment_dissatisfied</span>
-                                </button>
-                                <button id="btn-neutral" class="btn-icon" title="Neutral">
-                                    <span class="material-icons">sentiment_neutral</span>
-                                </button>
+                                <button id="btn-blink" class="btn-icon" title="Blink"><span class="material-icons">remove_red_eye</span></button>
+                                <button id="btn-smile" class="btn-icon" title="Smile"><span class="material-icons">sentiment_very_satisfied</span></button>
+                                <button id="btn-talk" class="btn-icon" title="Talk"><span class="material-icons">record_voice_over</span></button>
+                                <button id="btn-sad" class="btn-icon" title="Sad"><span class="material-icons">sentiment_very_dissatisfied</span></button>
+                                <button id="btn-angry" class="btn-icon" title="Angry"><span class="material-icons">sentiment_dissatisfied</span></button>
+                                <button id="btn-neutral" class="btn-icon" title="Neutral"><span class="material-icons">sentiment_neutral</span></button>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- AI Status Card -->
                     <div class="card ai-status-card">
-                        <div class="card-header">
-                            <h3>AI Status</h3>
-                        </div>
+                        <div class="card-header"><h3>AI Status</h3></div>
                         <div class="card-body">
                             <div class="status-grid">
-                                <div class="status-box">
-                                    <div class="status-label">Current Model</div>
-                                    <div class="status-value" id="current-model">Not Loaded</div>
-                                </div>
-                                <div class="status-box">
-                                    <div class="status-label">GPU Acceleration</div>
-                                    <div class="status-value" id="gpu-acceleration">Checking...</div>
-                                </div>
-                                <div class="status-box">
-                                    <div class="status-label">Memory Usage</div>
-                                    <div class="status-value" id="memory-usage">0 MB</div>
-                                </div>
-                                <div class="status-box">
-                                    <div class="status-label">FPS</div>
-                                    <div class="status-value" id="fps-counter">0</div>
-                                </div>
-                            </div>
-                            <div class="model-info-small" id="model-info-small" style="display: none; margin-top: 15px;">
-                                <p><strong>Model:</strong> <span id="model-name-small"></span></p>
-                                <p><strong>Size:</strong> <span id="model-size-small"></span></p>
-                                <p><strong>RAM Required:</strong> <span id="model-ram-small"></span></p>
+                                <div class="status-box"><div class="status-label">Current Model</div><div class="status-value" id="current-model">Not Loaded</div></div>
+                                <div class="status-box"><div class="status-label">GPU Acceleration</div><div class="status-value" id="gpu-acceleration">Checking...</div></div>
+                                <div class="status-box"><div class="status-label">Memory Usage</div><div class="status-value" id="memory-usage-display">0 MB</div></div>
+                                <div class="status-box"><div class="status-label">FPS</div><div class="status-value" id="fps-counter">0</div></div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Quick Actions Card -->
                     <div class="card quick-actions-card">
-                        <div class="card-header">
-                            <h3>Quick Actions</h3>
-                        </div>
+                        <div class="card-header"><h3>Quick Actions</h3></div>
                         <div class="card-body">
                             <div class="quick-action-buttons">
-                                <button class="quick-action-btn" data-action="new-avatar">
-                                    <span class="material-icons">add_a_photo</span>
-                                    <span>New Avatar</span>
-                                </button>
-                                <button class="quick-action-btn" data-action="record-voice">
-                                    <span class="material-icons">mic</span>
-                                    <span>Record Voice</span>
-                                </button>
-                                <button class="quick-action-btn" data-action="ai-chat">
-                                    <span class="material-icons">chat</span>
-                                    <span>AI Chat</span>
-                                </button>
-                                <button class="quick-action-btn" data-action="export">
-                                    <span class="material-icons">download</span>
-                                    <span>Export</span>
-                                </button>
-                                <button class="quick-action-btn" data-action="load-model">
-                                    <span class="material-icons">storage</span>
-                                    <span>Load Model</span>
-                                </button>
-                                <button class="quick-action-btn" data-action="test-lipsync">
-                                    <span class="material-icons">record_voice_over</span>
-                                    <span>Test LipSync</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Recent Projects Card -->
-                    <div class="card recent-projects-card">
-                        <div class="card-header">
-                            <h3>Recent Projects</h3>
-                            <div class="card-actions">
-                                <button id="btn-clear-projects" class="btn-icon-small" title="Clear All">
-                                    <span class="material-icons">delete_sweep</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div id="recent-projects-list" class="projects-list">
-                                <p class="empty-message">No recent projects yet. Create your first project!</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- System Stats Card -->
-                    <div class="card system-stats-card">
-                        <div class="card-header">
-                            <h3>System Statistics</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="stats-grid">
-                                <div class="stat-item">
-                                    <span class="material-icons">face</span>
-                                    <div class="stat-info">
-                                        <div class="stat-value" id="total-avatars">0</div>
-                                        <div class="stat-label">Avatars</div>
-                                    </div>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="material-icons">audiotrack</span>
-                                    <div class="stat-info">
-                                        <div class="stat-value" id="total-audio">0</div>
-                                        <div class="stat-label">Recordings</div>
-                                    </div>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="material-icons">chat</span>
-                                    <div class="stat-info">
-                                        <div class="stat-value" id="total-chats">0</div>
-                                        <div class="stat-label">Chat Sessions</div>
-                                    </div>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="material-icons">storage</span>
-                                    <div class="stat-info">
-                                        <div class="stat-value" id="total-models">0</div>
-                                        <div class="stat-label">Models</div>
-                                    </div>
-                                </div>
+                                <button class="quick-action-btn" data-action="new-avatar"><span class="material-icons">add_a_photo</span><span>New Avatar</span></button>
+                                <button class="quick-action-btn" data-action="record-voice"><span class="material-icons">mic</span><span>Record Voice</span></button>
+                                <button class="quick-action-btn" data-action="ai-chat"><span class="material-icons">chat</span><span>AI Chat</span></button>
+                                <button class="quick-action-btn" data-action="export"><span class="material-icons">download</span><span>Export</span></button>
+                                <button class="quick-action-btn" data-action="load-model"><span class="material-icons">storage</span><span>Load Model</span></button>
+                                <button class="quick-action-btn" data-action="test-lipsync"><span class="material-icons">record_voice_over</span><span>Test LipSync</span></button>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Avatar Studio Page -->
-            <section id="avatar-studio" class="page">
-                <div class="page-header">
-                    <h2>Avatar Studio</h2>
-                    <div class="page-actions">
-                        <button id="btn-import-avatar" class="btn btn-secondary">
-                            <span class="material-icons">upload</span>
-                            Import Avatar
-                        </button>
-                        <input type="file" id="avatar-upload-input" accept=".png,.jpg,.jpeg,.gif,.svg" style="display: none;">
-                        <button id="btn-save-avatar" class="btn btn-primary">
-                            <span class="material-icons">save</span>
-                            Save Avatar
-                        </button>
-                        <button id="btn-new-avatar" class="btn btn-success">
-                            <span class="material-icons">add</span>
-                            New Avatar
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="studio-grid">
-                    <!-- Avatar Editor -->
-                    <div class="card avatar-editor-card">
-                        <div class="card-header">
-                            <h3>Avatar Editor</h3>
-                            <div class="card-actions">
-                                <select id="avatar-style-select" class="select-input-small">
-                                    <option value="realistic">Realistic</option>
-                                    <option value="cartoon">Cartoon</option>
-                                    <option value="anime">Anime</option>
-                                    <option value="robot">Robot</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="avatar-editor-container">
-                                <canvas id="avatar-editor-canvas" width="500" height="500"></canvas>
-                            </div>
-                            <div class="avatar-name-input">
-                                <input type="text" id="avatar-name-input" placeholder="Avatar Name" value="My Avatar">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Avatar Controls -->
-                    <div class="card avatar-controls-card">
-                        <div class="card-header">
-                            <h3>Avatar Controls</h3>
-                        </div>
-                        <div class="card-body">
-                            <!-- Face Controls -->
-                            <div class="control-section">
-                                <h4>Face</h4>
-                                <div class="slider-group">
-                                    <label>Face Scale</label>
-                                    <input type="range" id="face-scale" min="50" max="200" value="100" class="slider">
-                                    <span class="slider-value" id="face-scale-value">100%</span>
-                                </div>
-                                <div class="slider-group">
-                                    <label>Head Rotation</label>
-                                    <input type="range" id="head-rotation" min="-180" max="180" value="0" class="slider">
-                                    <span class="slider-value" id="head-rotation-value">0°</span>
-                                </div>
-                                <div class="color-picker-group">
-                                    <label>Skin Color</label>
-                                    <input type="color" id="skin-color" value="#ffdbac" class="color-picker">
-                                </div>
-                            </div>
-                            
-                            <!-- Eyes Controls -->
-                            <div class="control-section">
-                                <h4>Eyes</h4>
-                                <div class="slider-group">
-                                    <label>Eye Size</label>
-                                    <input type="range" id="eye-size" min="50" max="200" value="100" class="slider">
-                                    <span class="slider-value" id="eye-size-value">100%</span>
-                                </div>
-                                <div class="slider-group">
-                                    <label>Eye Position</label>
-                                    <input type="range" id="eye-position" min="0" max="100" value="50" class="slider">
-                                    <span class="slider-value" id="eye-position-value">50%</span>
-                                </div>
-                                <div class="slider-group">
-                                    <label>Eye Spacing</label>
-                                    <input type="range" id="eye-spacing" min="50" max="200" value="100" class="slider">
-                                    <span class="slider-value" id="eye-spacing-value">100%</span>
-                                </div>
-                                <div class="color-picker-group">
-                                    <label>Eye Color</label>
-                                    <input type="color" id="eye-color" value="#000000" class="color-picker">
-                                </div>
-                            </div>
-                            
-                            <!-- Mouth Controls -->
-                            <div class="control-section">
-                                <h4>Mouth</h4>
-                                <div class="slider-group">
-                                    <label>Mouth Size</label>
-                                    <input type="range" id="mouth-size" min="50" max="200" value="100" class="slider">
-                                    <span class="slider-value" id="mouth-size-value">100%</span>
-                                </div>
-                                <div class="slider-group">
-                                    <label>Mouth Position</label>
-                                    <input type="range" id="mouth-position" min="0" max="100" value="50" class="slider">
-                                    <span class="slider-value" id="mouth-position-value">50%</span>
-                                </div>
-                                <div class="color-picker-group">
-                                    <label>Mouth Color</label>
-                                    <input type="color" id="mouth-color" value="#ff6b6b" class="color-picker">
-                                </div>
-                            </div>
-                            
-                            <!-- Emotions -->
-                            <div class="control-section">
-                                <h4>Emotions</h4>
-                                <div class="emotion-grid">
-                                    <button class="emotion-btn" data-emotion="neutral">
-                                        <span class="emoji">😐</span>
-                                        <span>Neutral</span>
-                                    </button>
-                                    <button class="emotion-btn" data-emotion="happy">
-                                        <span class="emoji">😀</span>
-                                        <span>Happy</span>
-                                    </button>
-                                    <button class="emotion-btn" data-emotion="sad">
-                                        <span class="emoji">😢</span>
-                                        <span>Sad</span>
-                                    </button>
-                                    <button class="emotion-btn" data-emotion="angry">
-                                        <span class="emoji">😡</span>
-                                        <span>Angry</span>
-                                    </button>
-                                    <button class="emotion-btn" data-emotion="surprise">
-                                        <span class="emoji">😲</span>
-                                        <span>Surprise</span>
-                                    </button>
-                                    <button class="emotion-btn" data-emotion="excited">
-                                        <span class="emoji">😃</span>
-                                        <span>Excited</span>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <!-- Avatar List -->
-                            <div class="control-section">
-                                <h4>My Avatars</h4>
-                                <div id="avatar-list" class="avatar-list">
-                                    <p class="empty-message-small">No avatars saved yet.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- LipSync Control Page -->
-            <section id="lipsync-control" class="page">
-                <div class="page-header">
-                    <h2>LipSync Control Panel</h2>
-                    <div class="page-actions">
-                        <button id="btn-test-lipsync" class="btn btn-primary">
-                            <span class="material-icons">play_arrow</span>
-                            Test LipSync
-                        </button>
-                        <button id="btn-stop-lipsync" class="btn btn-secondary" disabled>
-                            <span class="material-icons">stop</span>
-                            Stop
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="control-grid">
-                    <!-- Mouth Animation Settings -->
-                    <div class="card lipsync-settings-card">
-                        <div class="card-header">
-                            <h3>Mouth Animation Settings</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="slider-group">
-                                <label>Opening Strength</label>
-                                <input type="range" id="mouth-opening" min="0" max="100" value="75" class="slider">
-                                <span class="slider-value" id="mouth-opening-value">75%</span>
-                                <p class="slider-description">Controls how wide the mouth opens</p>
-                            </div>
-                            <div class="slider-group">
-                                <label>Movement Speed</label>
-                                <input type="range" id="mouth-speed" min="0" max="100" value="50" class="slider">
-                                <span class="slider-value" id="mouth-speed-value">50%</span>
-                                <p class="slider-description">Controls how fast the mouth moves</p>
-                            </div>
-                            <div class="slider-group">
-                                <label>Smoothing</label>
-                                <input type="range" id="mouth-smoothing" min="0" max="100" value="80" class="slider">
-                                <span class="slider-value" id="mouth-smoothing-value">80%</span>
-                                <p class="slider-description">Controls animation smoothness</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Emotion Engine -->
-                    <div class="card emotion-engine-card">
-                        <div class="card-header">
-                            <h3>Emotion Engine</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="emotion-grid">
-                                <button class="emotion-btn active" data-emotion="neutral">
-                                    <span class="emoji">😐</span>
-                                    <span>Neutral</span>
-                                </button>
-                                <button class="emotion-btn" data-emotion="happy">
-                                    <span class="emoji">😀</span>
-                                    <span>Happy</span>
-                                </button>
-                                <button class="emotion-btn" data-emotion="sad">
-                                    <span class="emoji">😢</span>
-                                    <span>Sad</span>
-                                </button>
-                                <button class="emotion-btn" data-emotion="angry">
-                                    <span class="emoji">😡</span>
-                                    <span>Angry</span>
-                                </button>
-                                <button class="emotion-btn" data-emotion="surprise">
-                                    <span class="emoji">😲</span>
-                                    <span>Surprise</span>
-                                </button>
-                                <button class="emotion-btn" data-emotion="excited">
-                                    <span class="emoji">😃</span>
-                                    <span>Excited</span>
-                                </button>
-                            </div>
-                            <div class="emotion-info" style="margin-top: 15px;">
-                                <p><strong>Current Emotion:</strong> <span id="current-emotion">Neutral</span></p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Phoneme Visualizer -->
-                    <div class="card phoneme-visualizer-card">
-                        <div class="card-header">
-                            <h3>Phoneme Visualizer</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="phoneme-display" id="phoneme-display">
-                                <span class="phoneme-text">No audio detected</span>
-                            </div>
-                            <div class="phoneme-chart" id="phoneme-chart"></div>
-                            <div class="phoneme-history" id="phoneme-history">
-                                <p class="empty-message-small">No phonemes detected yet.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Detection Settings -->
-                    <div class="card detection-settings-card">
-                        <div class="card-header">
-                            <h3>Detection Settings</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="radio-group">
-                                <label>Detection Mode</label>
-                                <div class="radio-options">
-                                    <label class="radio-label">
-                                        <input type="radio" name="detection-mode" value="fast">
-                                        <span>Fast</span>
-                                        <span class="radio-desc">Low latency, less accuracy</span>
-                                    </label>
-                                    <label class="radio-label">
-                                        <input type="radio" name="detection-mode" value="balanced" checked>
-                                        <span>Balanced</span>
-                                        <span class="radio-desc">Good balance of speed and accuracy</span>
-                                    </label>
-                                    <label class="radio-label">
-                                        <input type="radio" name="detection-mode" value="accurate">
-                                        <span>Accurate</span>
-                                        <span class="radio-desc">High accuracy, more latency</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="slider-group">
-                                <label>Sensitivity</label>
-                                <input type="range" id="detection-sensitivity" min="0" max="100" value="70" class="slider">
-                                <span class="slider-value" id="detection-sensitivity-value">70%</span>
-                                <p class="slider-description">Adjusts how sensitive the detection is</p>
-                            </div>
-                            <div class="toggle-group">
-                                <label>Auto LipSync</label>
-                                <div class="toggle-switch">
-                                    <input type="checkbox" id="auto-lipsync" checked>
-                                    <span class="slider-round"></span>
-                                </div>
-                                <p class="toggle-description">Automatically start lip-sync when audio is detected</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Voice Studio Page -->
-            <section id="voice-studio" class="page">
-                <div class="page-header">
-                    <h2>Voice Studio</h2>
-                    <div class="page-actions">
-                        <button id="btn-start-recording" class="btn btn-danger">
-                            <span class="material-icons">mic</span>
-                            Start Recording
-                        </button>
-                        <button id="btn-stop-recording" class="btn btn-secondary" disabled>
-                            <span class="material-icons">stop</span>
-                            Stop
-                        </button>
-                        <button id="btn-preview-audio" class="btn btn-primary" disabled>
-                            <span class="material-icons">play_arrow</span>
-                            Preview
-                        </button>
-                        <button id="btn-clear-audio" class="btn btn-secondary">
-                            <span class="material-icons">delete</span>
-                            Clear
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="voice-grid">
-                    <!-- Audio Recorder -->
-                    <div class="card audio-recorder-card">
-                        <div class="card-header">
-                            <h3>Audio Recorder</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="recorder-display">
-                                <div class="waveform-container">
-                                    <canvas id="waveform-canvas" width="400" height="150"></canvas>
-                                </div>
-                                <div class="recording-info">
-                                    <div class="recording-status" id="recording-status">Ready to record</div>
-                                    <div class="timer" id="recording-timer">00:00:00</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Audio Upload -->
-                    <div class="card audio-upload-card">
-                        <div class="card-header">
-                            <h3>Upload Audio</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="upload-area" id="audio-upload-area">
-                                <span class="material-icons">upload</span>
-                                <p>Drag & drop audio files here</p>
-                                <p class="file-types">Supported: MP3, WAV, OGG, M4A</p>
-                                <input type="file" id="audio-upload-input" accept=".mp3,.wav,.ogg,.m4a" style="display: none;" multiple>
-                                <button id="btn-browse-audio" class="btn btn-secondary">Browse Files</button>
-                            </div>
-                            <div id="uploaded-files-list" class="files-list">
-                                <p class="empty-message-small">No files uploaded yet.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Audio Analysis -->
-                    <div class="card audio-analysis-card">
-                        <div class="card-header">
-                            <h3>Audio Analysis</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="analysis-grid">
-                                <div class="analysis-item">
-                                    <div class="analysis-header">
-                                        <span class="material-icons">volume_up</span>
-                                        <span>Volume</span>
-                                    </div>
-                                    <div class="analysis-bar">
-                                        <div class="bar-fill" id="volume-bar" style="width: 0%"></div>
-                                    </div>
-                                    <div class="analysis-value" id="volume-value">0 dB</div>
-                                </div>
-                                <div class="analysis-item">
-                                    <div class="analysis-header">
-                                        <span class="material-icons">graphic_eq</span>
-                                        <span>Pitch</span>
-                                    </div>
-                                    <div class="analysis-bar">
-                                        <div class="bar-fill" id="pitch-bar" style="width: 0%"></div>
-                                    </div>
-                                    <div class="analysis-value" id="pitch-value">0 Hz</div>
-                                </div>
-                                <div class="analysis-item">
-                                    <div class="analysis-header">
-                                        <span class="material-icons">music_note</span>
-                                        <span>Rhythm</span>
-                                    </div>
-                                    <div class="analysis-bar">
-                                        <div class="bar-fill" id="rhythm-bar" style="width: 0%"></div>
-                                    </div>
-                                    <div class="analysis-value" id="rhythm-value">0 BPM</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Audio Effects -->
-                    <div class="card audio-effects-card">
-                        <div class="card-header">
-                            <h3>Audio Effects</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="effects-grid">
-                                <div class="effect-control">
-                                    <label>Echo</label>
-                                    <input type="range" id="echo-effect" min="0" max="100" value="0" class="slider">
-                                    <span class="slider-value" id="echo-value">0%</span>
-                                </div>
-                                <div class="effect-control">
-                                    <label>Reverb</label>
-                                    <input type="range" id="reverb-effect" min="0" max="100" value="0" class="slider">
-                                    <span class="slider-value" id="reverb-value">0%</span>
-                                </div>
-                                <div class="effect-control">
-                                    <label>Pitch Shift</label>
-                                    <input type="range" id="pitch-shift" min="-12" max="12" value="0" class="slider">
-                                    <span class="slider-value" id="pitch-shift-value">0</span>
-                                </div>
-                                <div class="effect-control">
-                                    <label>Playback Speed</label>
-                                    <input type="range" id="playback-speed" min="50" max="200" value="100" class="slider">
-                                    <span class="slider-value" id="playback-speed-value">100%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- AI Chat Studio Page -->
-            <section id="ai-chat" class="page">
-                <div class="page-header">
-                    <h2>AI Chat Studio</h2>
-                    <div class="page-actions">
-                        <select id="ai-model-select" class="select-input">
-                            <option value="gemma-2-2b-it-q4f16_1">Gemma 2B (4GB RAM)</option>
-                            <option value="qwen2.5-3b-instruct-q4f16_1">Qwen 3B (4-6GB RAM)</option>
-                            <option value="llama-3.2-1b-instruct-q4f16_1">Llama 3.2 1B (2-4GB RAM)</option>
-                            <option value="llama-3.1-8b-instruct-q4f16_1">Llama 3.1 8B (8-12GB RAM)</option>
-                        </select>
-                        <button id="btn-load-model" class="btn btn-primary">
-                            <span class="material-icons">download</span>
-                            Load Model
-                        </button>
-                        <button id="btn-clear-chat" class="btn btn-secondary">
-                            <span class="material-icons">delete</span>
-                            Clear Chat
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="chat-container">
-                    <div class="card chat-card">
-                        <div class="card-header">
-                            <h3>Chat with AI Assistant</h3>
-                            <div class="chat-status" id="chat-status">
-                                <span class="status-dot"></span>
-                                <span id="model-status-text">Select a model to start chatting</span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div id="chat-messages" class="chat-messages">
-                                <div class="chat-welcome">
-                                    <div class="ai-avatar">
-                                        <span class="material-icons">smart_toy</span>
-                                    </div>
-                                    <div class="welcome-message">
-                                        <h4>Hello! I'm your AI Assistant</h4>
-                                        <p>How can I help you create content for your avatar? Try asking me to:</p>
-                                        <div class="quick-prompts">
-                                            <button class="quick-prompt" data-prompt="Create a 30 second introduction for my AI avatar that explains what it can do">
-                                                <span class="material-icons">description</span>
-                                                Create Introduction
-                                            </button>
-                                            <button class="quick-prompt" data-prompt="Write a funny dialogue between two characters named Alice and Bob">
-                                                <span class="material-icons">theaters</span>
-                                                Funny Dialogue
-                                            </button>
-                                            <button class="quick-prompt" data-prompt="Generate a motivational speech about the power of AI">
-                                                <span class="material-icons">flag</span>
-                                                Motivational Speech
-                                            </button>
-                                            <button class="quick-prompt" data-prompt="Translate this to Urdu: Hello, how are you today?">
-                                                <span class="material-icons">translate</span>
-                                                Translate to Urdu
-                                            </button>
-                                            <button class="quick-prompt" data-prompt="Write a short poem about technology">
-                                                <span class="material-icons">edit</span>
-                                                Write a Poem
-                                            </button>
-                                            <button class="quick-prompt" data-prompt="Explain the concept of artificial intelligence in simple terms">
-                                                <span class="material-icons">school</span>
-                                                Explain AI
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="chat-input-container">
-                                <div class="chat-input-wrapper">
-                                    <textarea 
-                                        id="chat-input" 
-                                        placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)" 
-                                        rows="1"
-                                    ></textarea>
-                                    <button id="btn-send-message" class="btn btn-primary btn-icon-only" disabled>
-                                        <span class="material-icons">send</span>
-                                    </button>
-                                </div>
-                                <div class="chat-actions">
-                                    <button id="btn-send-to-tts" class="btn btn-secondary btn-small" disabled>
-                                        <span class="material-icons">record_voice_over</span>
-                                        Send to TTS
-                                    </button>
-                                    <button id="btn-send-to-lipsync" class="btn btn-secondary btn-small" disabled>
-                                        <span class="material-icons">animation</span>
-                                        Send to LipSync
-                                    </button>
-                                    <button id="btn-copy-response" class="btn btn-secondary btn-small" disabled>
-                                        <span class="material-icons">content_copy</span>
-                                        Copy
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="card ai-settings-card">
-                        <div class="card-header">
-                            <h3>AI Settings</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="settings-grid-small">
-                                <div class="setting-group">
-                                    <label>Temperature</label>
-                                    <input type="range" id="ai-temperature" min="0" max="1" step="0.1" value="0.7" class="slider">
-                                    <span class="slider-value" id="ai-temperature-value">0.7</span>
-                                    <p class="setting-desc">Higher = more creative, Lower = more deterministic</p>
-                                </div>
-                                <div class="setting-group">
-                                    <label>Max Tokens</label>
-                                    <input type="range" id="ai-max-tokens" min="256" max="2048" step="256" value="1024" class="slider">
-                                    <span class="slider-value" id="ai-max-tokens-value">1024</span>
-                                    <p class="setting-desc">Maximum length of AI response</p>
-                                </div>
-                                <div class="setting-group">
-                                    <label>Voice Personality</label>
-                                    <select id="ai-voice-personality" class="select-input">
-                                        <option value="neutral">Neutral</option>
-                                        <option value="friendly">Friendly</option>
-                                        <option value="professional">Professional</option>
-                                        <option value="funny">Funny</option>
-                                        <option value="serious">Serious</option>
-                                    </select>
-                                    <p class="setting-desc">AI response style</p>
-                                </div>
-                                <div class="setting-group">
-                                    <label>Stream Response</label>
-                                    <div class="toggle-switch">
-                                        <input type="checkbox" id="ai-stream" checked>
-                                        <span class="slider-round"></span>
-                                    </div>
-                                    <p class="setting-desc">Show response as it's being generated</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Model Manager Page -->
-            <section id="model-manager" class="page">
-                <div class="page-header">
-                    <h2>Model Manager</h2>
-                    <div class="page-actions">
-                        <button id="btn-refresh-models" class="btn btn-secondary">
-                            <span class="material-icons">refresh</span>
-                            Refresh
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="manager-grid">
-                    <!-- Available Models -->
-                    <div class="card models-card">
-                        <div class="card-header">
-                            <h3>Available AI Models</h3>
-                            <p class="card-subtitle">Download models for offline use</p>
-                        </div>
-                        <div class="card-body">
-                            <div class="models-filter">
-                                <button class="filter-btn active" data-filter="all">All</button>
-                                <button class="filter-btn" data-filter="lightweight">Lightweight</button>
-                                <button class="filter-btn" data-filter="balanced">Balanced</button>
-                                <button class="filter-btn" data-filter="high-quality">High Quality</button>
-                            </div>
-                            <div id="models-list" class="models-list">
-                                <!-- Models will be loaded dynamically -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Model Details -->
-                    <div class="card model-details-card">
-                        <div class="card-header">
-                            <h3>Model Details</h3>
-                        </div>
-                        <div class="card-body">
-                            <div id="model-details" class="model-details">
-                                <div class="empty-message">
-                                    <span class="material-icons">info</span>
-                                    <p>Select a model to view details</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Storage Information -->
-                    <div class="card storage-card">
-                        <div class="card-header">
-                            <h3>Storage Information</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="storage-info">
-                                <div class="storage-stat">
-                                    <span class="material-icons">storage</span>
-                                    <div class="stat-info">
-                                        <div class="stat-value" id="total-storage">0 GB</div>
-                                        <div class="stat-label">Total Storage</div>
-                                    </div>
-                                </div>
-                                <div class="storage-stat">
-                                    <span class="material-icons">folder</span>
-                                    <div class="stat-info">
-                                        <div class="stat-value" id="used-storage">0 GB</div>
-                                        <div class="stat-label">Used Storage</div>
-                                    </div>
-                                </div>
-                                <div class="storage-stat">
-                                    <span class="material-icons">check_circle</span>
-                                    <div class="stat-info">
-                                        <div class="stat-value" id="free-storage">0 GB</div>
-                                        <div class="stat-label">Free Storage</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="storage-bar-container" style="margin-top: 20px;">
-                                <div class="storage-bar-label">
-                                    <span>Storage Usage</span>
-                                    <span id="storage-percentage">0%</span>
-                                </div>
-                                <div class="storage-bar">
-                                    <div class="bar-fill" id="storage-bar-fill" style="width: 0%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Model Actions -->
-                    <div class="card model-actions-card">
-                        <div class="card-header">
-                            <h3>Model Actions</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="action-buttons">
-                                <button id="btn-download-model" class="btn btn-primary" disabled>
-                                    <span class="material-icons">download</span>
-                                    Download Selected
-                                </button>
-                                <button id="btn-load-model-from-manager" class="btn btn-success" disabled>
-                                    <span class="material-icons">play_arrow</span>
-                                    Load Model
-                                </button>
-                                <button id="btn-delete-model" class="btn btn-danger" disabled>
-                                    <span class="material-icons">delete</span>
-                                    Delete Selected
-                                </button>
-                            </div>
-                            <div class="model-actions-info" style="margin-top: 15px;">
-                                <p id="model-action-status">Select a model to enable actions</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Settings Page -->
-            <section id="settings" class="page">
-                <div class="page-header">
-                    <h2>Settings</h2>
-                </div>
-                
-                <div class="settings-grid">
-                    <!-- AI Settings -->
-                    <div class="card ai-settings-card">
-                        <div class="card-header">
-                            <h3>AI Settings</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="settings-form">
-                                <div class="form-group">
-                                    <label>Default Model</label>
-                                    <select id="setting-default-model" class="select-input">
-                                        <option value="gemma-2-2b-it-q4f16_1">Gemma 2B (4GB RAM)</option>
-                                        <option value="qwen2.5-3b-instruct-q4f16_1">Qwen 3B (4-6GB RAM)</option>
-                                        <option value="llama-3.2-1b-instruct-q4f16_1">Llama 3.2 1B (2-4GB RAM)</option>
-                                        <option value="llama-3.1-8b-instruct-q4f16_1">Llama 3.1 8B (8-12GB RAM)</option>
-                                    </select>
-                                    <p class="setting-desc">Default model to load on startup</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Default Temperature</label>
-                                    <input type="range" id="setting-default-temperature" min="0" max="1" step="0.1" value="0.7" class="slider">
-                                    <span class="slider-value" id="setting-default-temperature-value">0.7</span>
-                                    <p class="setting-desc">Default creativity level (0-1)</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Default Max Tokens</label>
-                                    <input type="range" id="setting-default-max-tokens" min="256" max="2048" step="256" value="1024" class="slider">
-                                    <span class="slider-value" id="setting-default-max-tokens-value">1024</span>
-                                    <p class="setting-desc">Default maximum response length</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>GPU Acceleration</label>
-                                    <div class="toggle-switch">
-                                        <input type="checkbox" id="setting-gpu-enabled" checked>
-                                        <span class="slider-round"></span>
-                                    </div>
-                                    <p class="setting-desc">Use GPU for faster AI processing</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>CPU Threads</label>
-                                    <input type="range" id="setting-cpu-threads" min="1" max="8" value="4" class="slider">
-                                    <span class="slider-value" id="setting-cpu-threads-value">4</span>
-                                    <p class="setting-desc">Number of CPU threads to use</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- LipSync Settings -->
-                    <div class="card lipsync-settings-card">
-                        <div class="card-header">
-                            <h3>LipSync Settings</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="settings-form">
-                                <div class="form-group">
-                                    <label>Detection Mode</label>
-                                    <select id="setting-detection-mode" class="select-input">
-                                        <option value="fast">Fast</option>
-                                        <option value="balanced" selected>Balanced</option>
-                                        <option value="accurate">Accurate</option>
-                                    </select>
-                                    <p class="setting-desc">Balance between speed and accuracy</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Target FPS</label>
-                                    <select id="setting-target-fps" class="select-input">
-                                        <option value="24">24 FPS</option>
-                                        <option value="30" selected>30 FPS</option>
-                                        <option value="60">60 FPS</option>
-                                    </select>
-                                    <p class="setting-desc">Target frames per second</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Animation Smoothing</label>
-                                    <div class="toggle-switch">
-                                        <input type="checkbox" id="setting-animation-smoothing" checked>
-                                        <span class="slider-round"></span>
-                                    </div>
-                                    <p class="setting-desc">Smooth mouth transitions</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Auto Start on Audio</label>
-                                    <div class="toggle-switch">
-                                        <input type="checkbox" id="setting-auto-start" checked>
-                                        <span class="slider-round"></span>
-                                    </div>
-                                    <p class="setting-desc">Automatically start lip-sync when audio is detected</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Performance Settings -->
-                    <div class="card performance-settings-card">
-                        <div class="card-header">
-                            <h3>Performance Settings</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="settings-form">
-                                <div class="form-group">
-                                    <label>WebGPU Support</label>
-                                    <div class="toggle-switch">
-                                        <input type="checkbox" id="setting-webgpu-enabled" checked>
-                                        <span class="slider-round"></span>
-                                    </div>
-                                    <p class="setting-desc">Enable WebGPU for better performance</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Memory Limit</label>
-                                    <select id="setting-memory-limit" class="select-input">
-                                        <option value="4">4 GB</option>
-                                        <option value="8" selected>8 GB</option>
-                                        <option value="12">12 GB</option>
-                                        <option value="16">16 GB</option>
-                                    </select>
-                                    <p class="setting-desc">Maximum memory usage limit</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Cache Enabled</label>
-                                    <div class="toggle-switch">
-                                        <input type="checkbox" id="setting-cache-enabled" checked>
-                                        <span class="slider-round"></span>
-                                    </div>
-                                    <p class="setting-desc">Cache models for faster loading</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Preload Models</label>
-                                    <div class="toggle-switch">
-                                        <input type="checkbox" id="setting-preload-models">
-                                        <span class="slider-round"></span>
-                                    </div>
-                                    <p class="setting-desc">Preload all models on startup</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Privacy & Security Settings -->
-                    <div class="card privacy-settings-card">
-                        <div class="card-header">
-                            <h3>Privacy & Security</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="settings-form">
-                                <div class="form-group">
-                                    <label>Offline Mode</label>
-                                    <div class="toggle-switch">
-                                        <input type="checkbox" id="setting-offline-mode" checked disabled>
-                                        <span class="slider-round"></span>
-                                    </div>
-                                    <p class="setting-desc">All processing happens locally in your browser</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>No Data Upload</label>
-                                    <div class="toggle-switch">
-                                        <input type="checkbox" id="setting-no-upload" checked disabled>
-                                        <span class="slider-round"></span>
-                                    </div>
-                                    <p class="setting-desc">Your data never leaves your device</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Local Storage Only</label>
-                                    <div class="toggle-switch">
-                                        <input type="checkbox" id="setting-local-storage" checked disabled>
-                                        <span class="slider-round"></span>
-                                    </div>
-                                    <p class="setting-desc">All data is stored locally in IndexedDB</p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Delete All Data</label>
-                                    <button id="btn-delete-all-data" class="btn btn-danger btn-small">
-                                        <span class="material-icons">delete_forever</span>
-                                        Delete All Data
-                                    </button>
-                                    <p class="setting-desc">Remove all local data and cached models</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- About & Info -->
-                    <div class="card about-card">
-                        <div class="card-header">
-                            <h3>About LipSync AI Studio Pro</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="about-content">
-                                <p><strong>Version:</strong> 1.0.0</p>
-                                <p><strong>License:</strong> MIT</p>
-                                <p><strong>Technology:</strong> WebLLM, TensorFlow.js, Web Audio API</p>
-                                <p><strong>Privacy:</strong> 100% Offline - No data leaves your device</p>
-                                <p style="margin-top: 15px;">
-                                    A complete offline-first browser AI avatar and lip-sync application. 
-                                    All AI processing happens locally using WebLLM.
-                                </p>
-                            </div>
-                            <div class="about-links" style="margin-top: 20px;">
-                                <a href="https://github.com/abdulraheemnohri/LipSync-AI-Studio-Pro" target="_blank" class="btn btn-secondary btn-small">
-                                    <span class="material-icons">code</span>
-                                    View Source Code
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+            <!-- Other pages would go here - simplified for now -->
+            <section id="avatar-studio" class="page"><div class="page-header"><h2>Avatar Studio</h2></div></section>
+            <section id="lipsync-control" class="page"><div class="page-header"><h2>LipSync Control</h2></div></section>
+            <section id="voice-studio" class="page"><div class="page-header"><h2>Voice Studio</h2></div></section>
+            <section id="ai-chat" class="page"><div class="page-header"><h2>AI Chat Studio</h2></div></section>
+            <section id="model-manager" class="page"><div class="page-header"><h2>Model Manager</h2></div></section>
+            <section id="settings" class="page"><div class="page-header"><h2>Settings</h2></div></section>
         </main>
-
-        <!-- Export Modal -->
-        <div id="export-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Export Project</h3>
-                    <button class="modal-close">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="export-options">
-                        <h4>Export Format</h4>
-                        <div class="export-format-grid">
-                            <label class="export-option">
-                                <input type="radio" name="export-format" value="video-webm" checked>
-                                <span class="option-card">
-                                    <span class="material-icons">videocam</span>
-                                    <span>Video (WebM)</span>
-                                    <span class="option-desc">Animated video with avatar</span>
-                                </span>
-                            </label>
-                            <label class="export-option">
-                                <input type="radio" name="export-format" value="audio-wav">
-                                <span class="option-card">
-                                    <span class="material-icons">audiotrack</span>
-                                    <span>Audio (WAV)</span>
-                                    <span class="option-desc">High quality audio</span>
-                                </span>
-                            </label>
-                            <label class="export-option">
-                                <input type="radio" name="export-format" value="image-png">
-                                <span class="option-card">
-                                    <span class="material-icons">image</span>
-                                    <span>Image (PNG)</span>
-                                    <span class="option-desc">Static avatar image</span>
-                                </span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="export-settings" style="margin-top: 20px;">
-                        <h4>Settings</h4>
-                        <div class="settings-grid-small">
-                            <div class="setting-group">
-                                <label>Quality</label>
-                                <select id="export-quality" class="select-input">
-                                    <option value="high">High</option>
-                                    <option value="medium" selected>Medium</option>
-                                    <option value="low">Low</option>
-                                </select>
-                            </div>
-                            <div class="setting-group">
-                                <label>Resolution</label>
-                                <select id="export-resolution" class="select-input">
-                                    <option value="1080p">1080p (1920x1080)</option>
-                                    <option value="720p" selected>720p (1280x720)</option>
-                                    <option value="480p">480p (640x480)</option>
-                                </select>
-                            </div>
-                            <div class="setting-group">
-                                <label>Include Audio</label>
-                                <div class="toggle-switch">
-                                    <input type="checkbox" id="export-include-audio" checked>
-                                    <span class="slider-round"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="btn-cancel-export" class="btn btn-secondary">Cancel</button>
-                    <button id="btn-start-export" class="btn btn-primary">
-                        <span class="material-icons">download</span>
-                        Export
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Confirm Delete Modal -->
-        <div id="confirm-delete-modal" class="modal">
-            <div class="modal-content" style="max-width: 400px;">
-                <div class="modal-header">
-                    <h3>Confirm Delete</h3>
-                    <button class="modal-close">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="confirm-message">
-                        <span class="material-icons warning-icon">warning</span>
-                        <p id="confirm-message-text">Are you sure?</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="btn-cancel-delete" class="btn btn-secondary">Cancel</button>
-                    <button id="btn-confirm-delete" class="btn btn-danger">
-                        <span class="material-icons">delete_forever</span>
-                        Delete
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Toast Notifications -->
-        <div id="toast-container" class="toast-container"></div>
-
     </div>
 
-    <!-- Scripts -->
-    <script type="module" src="js/settings.js"></script>
-    <script type="module" src="js/database.js"></script>
-    <script type="module" src="js/webllm-engine.js"></script>
-    <script type="module" src="js/audio-engine.js"></script>
-    <script type="module" src="js/lipsync-engine.js"></script>
-    <script type="module" src="js/avatar-engine.js"></script>
-    <script type="module" src="js/camera-engine.js"></script>
-    <script type="module" src="js/exporter.js"></script>
-    <script type="module" src="js/app.js"></script>
+    <!-- Notification System -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Load TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+    
+    <!-- Load all components -->
+    <script src="js/settings.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/webllm-engine.js"></script>
+    <script src="js/audio-engine.js"></script>
+    <script src="js/lipsync-engine.js"></script>
+    <script src="js/avatar-engine.js"></script>
+    <script src="js/camera-engine.js"></script>
+    <script src="js/exporter.js"></script>
+    
+    <!-- Main App Script - This will initialize everything -->
+    <script src="js/app.js"></script>
+    
+    <!-- Initialize app when DOM is ready -->
+    <script>
+        // When DOM is loaded, initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if app class exists
+            if (typeof LipSyncAIStudioPro !== 'undefined') {
+                window.app = new LipSyncAIStudioPro();
+                window.app.init().catch(function(error) {
+                    console.error('Error initializing app:', error);
+                    // Hide loading screen even on error
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('app').style.opacity = '1';
+                });
+            } else {
+                console.error('LipSyncAIStudioPro class not found!');
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('app').style.opacity = '1';
+            }
+        });
+        
+        // Fallback: if DOMContentLoaded already fired
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(function() {
+                if (typeof LipSyncAIStudioPro !== 'undefined') {
+                    window.app = new LipSyncAIStudioPro();
+                    window.app.init().catch(function(error) {
+                        console.error('Error initializing app:', error);
+                    });
+                }
+            }, 1);
+        }
+    </script>
 </body>
 </html>
