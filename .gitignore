@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cache
+.cache/
+models/webllm/*
+!models/webllm/.gitkeep
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Asset cache
+assets/cache/
+
+# Database files
+*.db
+*.sqlite
+
+# Local storage
+localStorage/
+
+# Test coverage
+coverage/
+
+# Audio/video temp files
+*.wav
+*.mp3
+*.ogg
+*.webm
+*.mp4
+
+# Export files
+*.zip
+*.json
+!assets/avatars/*.svg
+!assets/avatars/*.png
+
+# Service worker cache
+service-worker-cache/
+
+# IndexedDB exports
+*.idxdb
