@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LipSync AI Studio Pro</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/animations.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+</head>
+<body>
+<div id="loading-screen" class="loading-screen">
+  <div class="loader"><div class="spinner"></div><p>Loading LipSync AI Studio...</p><p id="loading-status">Initializing...</p></div>
+</div>
+<div id="app" class="app-container">
+  <nav class="sidebar">
+    <div class="sidebar-header"><div class="logo"><span class="material-icons">face</span><h1>LipSync AI</h1></div></div>
+    <ul class="nav-menu">
+      <li class="nav-item active" data-page="dashboard"><span class="material-icons">dashboard</span><span>Dashboard</span></li>
+      <li class="nav-item" data-page="avatar-studio"><span class="material-icons">person</span><span>Avatar Studio</span></li>
+      <li class="nav-item" data-page="lipsync-control"><span class="material-icons">record_voice_over</span><span>LipSync Control</span></li>
+      <li class="nav-item" data-page="voice-studio"><span class="material-icons">mic</span><span>Voice Studio</span></li>
+      <li class="nav-item" data-page="ai-chat"><span class="material-icons">chat</span><span>AI Chat Studio</span></li>
+      <li class="nav-item" data-page="model-manager"><span class="material-icons">storage</span><span>Model Manager</span></li>
+      <li class="nav-item" data-page="settings"><span class="material-icons">settings</span><span>Settings</span></li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="system-status">
+        <div class="status-item"><span class="status-dot online"></span><span>WebLLM: <span id="webllm-status">Offline</span></span></div>
+        <div class="status-item"><span class="status-dot"></span><span>GPU: <span id="gpu-status">Checking...</span></span></div>
+      </div>
+    </div>
+  </nav>
+  <main class="main-content">
+    <section id="dashboard" class="page active">
+      <div class="page-header">
+        <h2>Dashboard</h2>
+        <div class="page-actions">
+          <button id="btn-create-script" class="btn btn-primary"><span class="material-icons">add</span> Create Script</button>
+          <button id="btn-upload-voice" class="btn btn-secondary"><span class="material-icons">upload</span> Upload Voice</button>
+          <button id="btn-start-animation" class="btn btn-success"><span class="material-icons">play_arrow</span> Start Animation</button>
+        </div>
+      </div>
+      <div class="dashboard-grid">
+        <div class="card avatar-preview-card">
+          <div class="card-header"><h3>AI Avatar Preview</h3></div>
+          <div class="card-body">
+            <div class="avatar-canvas-container">
+              <canvas id="avatar-canvas" width="400" height="400"></canvas>
+            </div>
+            <div class="avatar-controls">
+              <button id="btn-blink" class="btn-icon" title="Blink"><span class="material-icons">remove_red_eye</span></button>
+              <button id="btn-smile" class="btn-icon" title="Smile"><span class="material-icons">sentiment_very_satisfied</span></button>
+              <button id="btn-talk" class="btn-icon" title="Talk"><span class="material-icons">record_voice_over</span></button>
+              <button id="btn-neutral" class="btn-icon" title="Neutral"><span class="material-icons">sentiment_neutral</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="card ai-status-card">
+          <div class="card-header"><h3>AI Status</h3></div>
+          <div class="card-body">
+            <div class="status-grid">
+              <div class="status-box"><div class="status-label">Current Model</div><div class="status-value" id="current-model">Not Loaded</div></div>
+              <div class="status-box"><div class="status-label">GPU Acceleration</div><div class="status-value" id="gpu-acceleration">Checking...</div></div>
+              <div class="status-box"><div class="status-label">Memory Usage</div><div class="status-value" id="memory-usage">0 MB</div></div>
+              <div class="status-box"><div class="status-label">FPS</div><div class="status-value" id="fps-counter">0</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card quick-actions-card">
+          <div class="card-header"><h3>Quick Actions</h3></div>
+          <div class="card-body">
+            <div class="quick-action-buttons">
+              <button class="quick-action-btn" data-action="new-avatar"><span class="material-icons">add_a_photo</span><span>New Avatar</span></button>
+              <button class="quick-action-btn" data-action="record-voice"><span class="material-icons">mic</span><span>Record Voice</span></button>
+              <button class="quick-action-btn" data-action="ai-chat"><span class="material-icons">chat</span><span>AI Chat</span></button>
+              <button class="quick-action-btn" data-action="export"><span class="material-icons">download</span><span>Export</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="avatar-studio" class="page">
+      <div class="page-header">
+        <h2>Avatar Studio</h2>
+        <div class="page-actions">
+          <button id="btn-import-avatar" class="btn btn-secondary"><span class="material-icons">upload</span> Import Avatar</button>
+          <input type="file" id="avatar-upload-input" accept=".png,.jpg,.jpeg,.gif,.svg" style="display: none;">
+          <button id="btn-save-avatar" class="btn btn-primary"><span class="material-icons">save</span> Save Avatar</button>
+        </div>
+      </div>
+      <div class="studio-grid">
+        <div class="card avatar-editor-card">
+          <div class="card-header"><h3>Avatar Editor</h3></div>
+          <div class="card-body"><canvas id="avatar-editor-canvas" width="500" height="500"></canvas></div>
+        </div>
+        <div class="card avatar-controls-card">
+          <div class="card-header"><h3>Avatar Controls</h3></div>
+          <div class="card-body">
+            <div class="control-section">
+              <h4>Face</h4>
+              <div class="slider-group">
+                <label>Face Scale</label>
+                <input type="range" id="face-scale" min="50" max="200" value="100" class="slider"><span class="slider-value" id="face-scale-value">100%</span>
+              </div>
+              <div class="slider-group">
+                <label>Head Rotation</label>
+                <input type="range" id="head-rotation" min="-180" max="180" value="0" class="slider"><span class="slider-value" id="head-rotation-value">0°</span>
+              </div>
+            </div>
+            <div class="control-section">
+              <h4>Eyes</h4>
+              <div class="slider-group">
+                <label>Eye Size</label>
+                <input type="range" id="eye-size" min="50" max="200" value="100" class="slider"><span class="slider-value" id="eye-size-value">100%</span>
+              </div>
+            </div>
+            <div class="control-section">
+              <h4>Mouth</h4>
+              <div class="slider-group">
+                <label>Mouth Size</label>
+                <input type="range" id="mouth-size" min="50" max="200" value="100" class="slider"><span class="slider-value" id="mouth-size-value">100%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="lipsync-control" class="page">
+      <div class="page-header">
+        <h2>LipSync Control Panel</h2>
+        <div class="page-actions">
+          <button id="btn-test-lipsync" class="btn btn-primary"><span class="material-icons">play_arrow</span> Test LipSync</button>
+        </div>
+      </div>
+      <div class="control-grid">
+        <div class="card lipsync-settings-card">
+          <div class="card-header"><h3>Mouth Animation Settings</h3></div>
+          <div class="card-body">
+            <div class="slider-group"><label>Opening Strength</label><input type="range" id="mouth-opening" min="0" max="100" value="75" class="slider"><span class="slider-value" id="mouth-opening-value">75%</span></div>
+            <div class="slider-group"><label>Movement Speed</label><input type="range" id="mouth-speed" min="0" max="100" value="50" class="slider"><span class="slider-value" id="mouth-speed-value">50%</span></div>
+            <div class="slider-group"><label>Smoothing</label><input type="range" id="mouth-smoothing" min="0" max="100" value="80" class="slider"><span class="slider-value" id="mouth-smoothing-value">80%</span></div>
+          </div>
+        </div>
+        <div class="card emotion-engine-card">
+          <div class="card-header"><h3>Emotion Engine</h3></div>
+          <div class="card-body">
+            <div class="emotion-grid">
+              <button class="emotion-btn active" data-emotion="neutral"><span class="emoji">😐</span><span>Neutral</span></button>
+              <button class="emotion-btn" data-emotion="happy"><span class="emoji">😀</span><span>Happy</span></button>
+              <button class="emotion-btn" data-emotion="sad"><span class="emoji">😢</span><span>Sad</span></button>
+              <button class="emotion-btn" data-emotion="angry"><span class="emoji">😡</span><span>Angry</span></button>
+              <button class="emotion-btn" data-emotion="surprise"><span class="emoji">😲</span><span>Surprise</span></button>
+              <button class="emotion-btn" data-emotion="excited"><span class="emoji">😃</span><span>Excited</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="voice-studio" class="page">
+      <div class="page-header">
+        <h2>Voice Studio</h2>
+        <div class="page-actions">
+          <button id="btn-start-recording" class="btn btn-danger"><span class="material-icons">mic</span> Start Recording</button>
+          <button id="btn-stop-recording" class="btn btn-secondary" disabled><span class="material-icons">stop</span> Stop</button>
+          <button id="btn-preview-audio" class="btn btn-primary" disabled><span class="material-icons">play_arrow</span> Preview</button>
+        </div>
+      </div>
+      <div class="voice-grid">
+        <div class="card audio-recorder-card">
+          <div class="card-header"><h3>Audio Recorder</h3></div>
+          <div class="card-body">
+            <div class="recorder-display">
+              <canvas id="waveform-canvas" width="400" height="100"></canvas>
+              <div class="recording-status" id="recording-status">Ready to record</div>
+              <div class="timer" id="recording-timer">00:00:00</div>
+            </div>
+          </div>
+        </div>
+        <div class="card audio-upload-card">
+          <div class="card-header"><h3>Upload Audio</h3></div>
+          <div class="card-body">
+            <div class="upload-area" id="audio-upload-area">
+              <span class="material-icons">upload</span>
+              <p>Drag & drop audio files here</p>
+              <p class="file-types">MP3, WAV, OGG, M4A</p>
+              <input type="file" id="audio-upload-input" accept=".mp3,.wav,.ogg,.m4a" style="display: none;">
+              <button id="btn-browse-audio" class="btn btn-secondary">Browse Files</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="ai-chat" class="page">
+      <div class="page-header">
+        <h2>AI Chat Studio</h2>
+        <div class="page-actions">
+          <select id="ai-model-select" class="select-input">
+            <option value="gemma-2-2b-it-q4f16_1">Gemma 2B</option>
+            <option value="qwen2.5-3b-instruct-q4f16_1">Qwen 3B</option>
+            <option value="llama-3.2-1b-instruct-q4f16_1">Llama 3.2 1B</option>
+            <option value="llama-3.1-8b-instruct-q4f16_1">Llama 3.1 8B</option>
+          </select>
+          <button id="btn-clear-chat" class="btn btn-secondary"><span class="material-icons">delete</span> Clear Chat</button>
+        </div>
+      </div>
+      <div class="chat-container">
+        <div class="card chat-card">
+          <div class="card-header"><h3>Chat with AI Assistant</h3></div>
+          <div class="card-body">
+            <div id="chat-messages" class="chat-messages">
+              <div class="chat-welcome">
+                <span class="material-icons">smart_toy</span>
+                <p>Hello! I'm your AI assistant. How can I help you create content for your avatar?</p>
+                <div class="quick-prompts">
+                  <button class="quick-prompt" data-prompt="Create a 30 second introduction for my AI avatar">Create Introduction</button>
+                  <button class="quick-prompt" data-prompt="Write a funny dialogue between two characters">Funny Dialogue</button>
+                  <button class="quick-prompt" data-prompt="Generate a motivational speech">Motivational Speech</button>
+                  <button class="quick-prompt" data-prompt="Translate this to Urdu: Hello, how are you?">Translate to Urdu</button>
+                </div>
+              </div>
+            </div>
+            <div class="chat-input-container">
+              <div class="chat-input-wrapper">
+                <textarea id="chat-input" placeholder="Type your message here..." rows="1"></textarea>
+                <button id="btn-send-message" class="btn btn-primary"><span class="material-icons">send</span></button>
+              </div>
+              <div class="chat-actions">
+                <button id="btn-send-to-tts" class="btn btn-secondary btn-small" disabled><span class="material-icons">record_voice_over</span> Send to TTS</button>
+                <button id="btn-send-to-lipsync" class="btn btn-secondary btn-small" disabled><span class="material-icons">animation</span> Send to LipSync</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="model-manager" class="page">
+      <div class="page-header">
+        <h2>Model Manager</h2>
+        <div class="page-actions">
+          <button id="btn-refresh-models" class="btn btn-secondary"><span class="material-icons">refresh</span> Refresh</button>
+        </div>
+      </div>
+      <div class="manager-grid">
+        <div class="card models-card">
+          <div class="card-header"><h3>Available AI Models</h3></div>
+          <div class="card-body"><div id="models-list" class="models-list"></div></div>
+        </div>
+        <div class="card storage-card">
+          <div class="card-header"><h3>Storage</h3></div>
+          <div class="card-body">
+            <div class="storage-info">
+              <div>Free: <span id="free-storage">8 GB</span></div>
+              <div class="storage-bar"><div id="storage-bar-fill" style="width: 10%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="settings" class="page">
+      <div class="page-header"><h2>Settings</h2></div>
+      <div class="settings-grid">
+        <div class="card ai-settings-card">
+          <div class="card-header"><h3>AI Settings</h3></div>
+          <div class="card-body">
+            <div class="settings-form">
+              <div class="form-group"><label>Default Model</label><select id="setting-default-model" class="select-input"><option value="gemma-2-2b-it-q4f16_1">Gemma 2B</option><option value="qwen2.5-3b-instruct-q4f16_1">Qwen 3B</option><option value="llama-3.2-1b-instruct-q4f16_1">Llama 3.2 1B</option><option value="llama-3.1-8b-instruct-q4f16_1">Llama 3.1 8B</option></select></div>
+              <div class="form-group"><label>Temperature</label><input type="range" id="ai-temperature" min="0" max="1" step="0.1" value="0.7" class="slider"><span id="ai-temperature-value">0.7</span></div>
+              <div class="form-group"><label>GPU Enabled</label><div class="toggle-switch"><input type="checkbox" id="setting-gpu-enabled" checked><span class="slider-round"></span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card privacy-settings-card">
+          <div class="card-header"><h3>Privacy</h3></div>
+          <div class="card-body">
+            <div class="settings-form">
+              <div class="form-group"><label>Offline Mode</label><div class="toggle-switch"><input type="checkbox" id="setting-offline-mode" checked><span class="slider-round"></span></div><p>All processing happens locally</p></div>
+              <div class="form-group"><label>No Data Upload</label><div class="toggle-switch"><input type="checkbox" checked disabled><span class="slider-round"></span></div><p>Your data never leaves your device</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="export-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header"><h3>Export Project</h3><button class="modal-close">&times;</button></div>
+      <div class="modal-body">
+        <div class="export-format-grid">
+          <label class="export-option"><input type="radio" name="export-format" value="video-webm" checked><span class="option-card"><span class="material-icons">videocam</span><span>Video (WebM)</span></span></label>
+          <label class="export-option"><input type="radio" name="export-format" value="audio-wav"><span class="option-card"><span class="material-icons">audiotrack</span><span>Audio (WAV)</span></span></label>
+          <label class="export-option"><input type="radio" name="export-format" value="image-png"><span class="option-card"><span class="material-icons">image</span><span>Image (PNG)</span></span></label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-cancel-export" class="btn btn-secondary">Cancel</button>
+        <button id="btn-start-export" class="btn btn-primary"><span class="material-icons">download</span> Export</button>
+      </div>
+    </div>
+  </div>
+  <div id="toast-container" class="toast-container"></div>
+</div>
+<script type="module" src="js/settings.js"></script>
+<script type="module" src="js/database.js"></script>
+<script type="module" src="js/webllm-engine.js"></script>
+<script type="module" src="js/audio-engine.js"></script>
+<script type="module" src="js/lipsync-engine.js"></script>
+<script type="module" src="js/avatar-engine.js"></script>
+<script type="module" src="js/camera-engine.js"></script>
+<script type="module" src="js/exporter.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
