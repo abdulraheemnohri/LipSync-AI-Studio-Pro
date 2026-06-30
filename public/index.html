@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LipSync AI Studio Pro - Complete offline AI avatar and lip-sync application">
+    <title>LipSync AI Studio Pro</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 0.5s ease, visibility 0.5s ease; }
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
+        .loader { text-align: center; color: white; }
+        .spinner { width: 60px; height: 60px; border: 4px solid #2a2a4a; border-top-color: #4a6baf; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader p { margin: 10px 0; font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #loading-status { color: #b0b0b0; font-size: 14px; }
+        .loading-bar { width: 300px; height: 4px; background: #2a2a4a; border-radius: 2px; margin: 20px auto 0; overflow: hidden; }
+        .loading-progress { height: 100%; background: linear-gradient(90deg, #4a6baf, #8a9bc2); border-radius: 2px; transition: width 0.3s ease; width: 0%; }
+        .app-container { opacity: 0; transition: opacity 0.5s ease; }
+        .app-container.visible { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader">
+            <div class="spinner"></div>
+            <p>Loading LipSync AI Studio Pro...</p>
+            <p id="loading-status">Initializing components...</p>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="app" class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="material-icons">face</span>
+                    <h1>LipSync AI</h1>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="dashboard">
+                    <span class="material-icons">dashboard</span>
+                    <span>Dashboard</span>
+                </li>
+                <li class="nav-item" data-page="avatar-studio">
+                    <span class="material-icons">person</span>
+                    <span>Avatar Studio</span>
+                </li>
+                <li class="nav-item" data-page="lipsync-control">
+                    <span class="material-icons">record_voice_over</span>
+                    <span>LipSync Control</span>
+                </li>
+                <li class="nav-item" data-page="voice-studio">
+                    <span class="material-icons">mic</span>
+                    <span>Voice Studio</span>
+                </li>
+                <li class="nav-item" data-page="ai-chat">
+                    <span class="material-icons">chat</span>
+                    <span>AI Chat Studio</span>
+                    <span class="notification-dot" id="new-message-notification" style="display: none;">\u2022</span>
+                </li>
+                <li class="nav-item" data-page="model-manager">
+                    <span class="material-icons">storage</span>
+                    <span>Model Manager</span>
+                </li>
+                <li class="nav-item" data-page="settings">
+                    <span class="material-icons">settings</span>
+                    <span>Settings</span>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <div class="status-item">
+                        <span class="status-dot" id="webllm-status-dot"></span>
+                        <span>WebLLM: <span id="webllm-status">Initializing...</span></span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-dot" id="gpu-status-dot"></span>
+                        <span>GPU: <span id="gpu-status">Checking...</span></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <section id="dashboard" class="page active">
+                <div class="page-header">
+                    <h2>Dashboard</h2>
+                    <div class="page-actions">
+                        <button id="btn-upload-voice" class="btn btn-secondary">
+                            <span class="material-icons">upload</span> Upload Voice
+                        </button>
+                        <button id="btn-start-animation" class="btn btn-success">
+                            <span class="material-icons">play_arrow</span> Start Animation
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="card avatar-preview-card">
+                        <div class="card-header">
+                            <h3>AI Avatar Preview</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="avatar-canvas-container">
+                                <canvas id="avatar-canvas" width="400" height="400"></canvas>
+                            </div>
+                            <div class="avatar-controls">
+                                <button class="btn-icon" onclick="window.AvatarEngine?.blinkAvatar()" title="Blink">
+                                    <span class="material-icons">remove_red_eye</span>
+                                </button>
+                                <button class="btn-icon" onclick="window.AvatarEngine?.smile()" title="Smile">
+                                    <span class="material-icons">sentiment_very_satisfied</span>
+                                </button>
+                                <button class="btn-icon" onclick="window.AvatarEngine?.talk()" title="Talk">
+                                    <span class="material-icons">record_voice_over</span>
+                                </button>
+                                <button class="btn-icon" onclick="window.AvatarEngine?.neutral()" title="Neutral">
+                                    <span class="material-icons">sentiment_neutral</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card ai-status-card">
+                        <div class="card-header"><h3>AI Status</h3></div>
+                        <div class="card-body">
+                            <div class="status-grid">
+                                <div class="status-box">
+                                    <div class="status-label">Current Model</div>
+                                    <div class="status-value" id="current-model">Not Loaded</div>
+                                </div>
+                                <div class="status-box">
+                                    <div class="status-label">GPU Acceleration</div>
+                                    <div class="status-value" id="gpu-acceleration">Checking...</div>
+                                </div>
+                                <div class="status-box">
+                                    <div class="status-label">Memory Usage</div>
+                                    <div class="status-value" id="memory-usage-display">0 MB</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card quick-actions-card">
+                        <div class="card-header"><h3>Quick Actions</h3></div>
+                        <div class="card-body">
+                            <div class="quick-action-buttons">
+                                <button class="quick-action-btn" data-action="new-avatar" onclick="navigateTo('avatar-studio')">
+                                    <span class="material-icons">add_a_photo</span><span>New Avatar</span>
+                                </button>
+                                <button class="quick-action-btn" data-action="record-voice" onclick="navigateTo('voice-studio')">
+                                    <span class="material-icons">mic</span><span>Record Voice</span>
+                                </button>
+                                <button class="quick-action-btn" data-action="ai-chat" onclick="navigateTo('ai-chat')">
+                                    <span class="material-icons">chat</span><span>AI Chat</span>
+                                </button>
+                                <button class="quick-action-btn" data-action="export" onclick="exportProject()">
+                                    <span class="material-icons">download</span><span>Export</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="avatar-studio" class="page">
+                <div class="page-header">
+                    <h2>Avatar Studio</h2>
+                    <div class="page-actions">
+                        <button id="btn-new-avatar" class="btn btn-success" onclick="window.AvatarEngine?.createNewAvatar()">
+                            <span class="material-icons">add</span> New Avatar
+                        </button>
+                    </div>
+                </div>
+                <div class="studio-grid">
+                    <div class="card avatar-editor-card">
+                        <div class="card-header"><h3>Avatar Editor</h3></div>
+                        <div class="card-body">
+                            <div class="avatar-editor-container">
+                                <canvas id="avatar-editor-canvas" width="500" height="500"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="lipsync-control" class="page">
+                <div class="page-header"><h2>LipSync Control</h2></div>
+                <div class="card">
+                    <div class="card-header"><h3>Real-time LipSync</h3></div>
+                    <div class="card-body">
+                        <canvas id="camera-canvas" width="640" height="480"></canvas>
+                        <video id="camera-video" autoplay playsinline style="display:none;"></video>
+                        <div style="margin-top: 20px;">
+                            <button id="btn-start-camera" class="btn btn-primary" onclick="startCamera()">Start Camera</button>
+                            <button id="btn-stop-camera" class="btn btn-secondary" onclick="stopCamera()">Stop Camera</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="voice-studio" class="page">
+                <div class="page-header"><h2>Voice Studio</h2></div>
+                <div class="card">
+                    <div class="card-header"><h3>Audio Recording</h3></div>
+                    <div class="card-body">
+                        <div id="audio-visualizer" style="width: 100%; height: 200px; background: #f0f0f0; margin-bottom: 20px;"></div>
+                        <button id="btn-start-recording" class="btn btn-primary">Start Recording</button>
+                        <button id="btn-stop-recording" class="btn btn-secondary">Stop Recording</button>
+                        <button id="btn-play-recording" class="btn btn-success">Play Recording</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ai-chat" class="page">
+                <div class="page-header"><h2>AI Chat Studio</h2></div>
+                <div class="chat-container">
+                    <div id="chat-messages" class="chat-messages" style="height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 15px; margin-bottom: 15px;"></div>
+                    <div class="chat-input">
+                        <select id="model-select" style="padding: 10px; margin-right: 10px;">
+                            <option value="gemma-2b">Gemma 2B</option>
+                            <option value="qwen-3b">Qwen 3B</option>
+                            <option value="llama-3.2-1b">Llama 3.2 1B</option>
+                            <option value="llama-3.1-8b">Llama 3.1 8B</option>
+                        </select>
+                        <input type="text" id="chat-input-text" placeholder="Type your message..." style="flex: 1; padding: 10px; margin-right: 10px;">
+                        <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="model-manager" class="page">
+                <div class="page-header"><h2>Model Manager</h2></div>
+                <div class="card">
+                    <div class="card-header"><h3>Available AI Models</h3></div>
+                    <div class="card-body" id="models-list">
+                        <p>Loading models...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings" class="page">
+                <div class="page-header"><h2>Settings</h2></div>
+                <div class="card">
+                    <div class="card-header"><h3>Application Settings</h3></div>
+                    <div class="card-body">
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label>Avatar Style</label>
+                                <select id="settings-avatar-style" onchange="updateSetting('avatarStyle', this.value)">
+                                    <option value="cartoon">Cartoon</option>
+                                    <option value="realistic">Realistic</option>
+                                    <option value="anime">Anime</option>
+                                    <option value="robot">Robot</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/settings.js"></script>
+    <script src="/js/database.js"></script>
+    <script src="/js/webllm-engine.js"></script>
+    <script src="/js/audio-engine.js"></script>
+    <script src="/js/lipsync-engine.js"></script>
+    <script src="/js/avatar-engine.js"></script>
+    <script src="/js/camera-engine.js"></script>
+    <script src="/js/exporter.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
